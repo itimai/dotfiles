@@ -3,5 +3,5 @@
 ### Using Git and the bootstrap script
 
 ```bash
-git clone git://github.yandex-team.ru:cherninely/dotfiles.git ~/dotfiles && ~/dotfiles/bootstrap.sh
+git clone git@github.com:itimai/dotfiles.git ~/dotfiles && ~/dotfiles/bootstrap.sh
 ```
