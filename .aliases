@@ -1,0 +1,150 @@
+# IP addresses
+alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias localip="ipconfig getifaddr en1"
+alias ips="ifconfig -a | grep -o 'inet6\? \(\([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+\)\|[a-fA-F0-9:]\+\)' | sed -e 's/inet6* //'"
+
+# Trim new lines and copy to clipboard
+alias c="tr -d '\n' | pbcopy"
+
+# URL-encode strings
+alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
+
+#common
+alias l42='ssh leon42.yandex.ru'
+
+
+alias ll='ls -laFo'
+alias l='ls -l'
+alias la='ls -a'
+alias ltr='ls -ltr'
+
+alias grep='grep --color=auto'
+
+alias e=$EDITOR
+alias es='vim -c"sy off"'
+
+alias g1='git log -1'
+alias g9='git lol -9'
+alias s1='svn log -l1'
+
+# Git
+alias ga='git add'
+alias gb='git branch -a'
+alias gc='git commit -am'
+alias gd='git di'
+alias gdc='git di --cached'
+alias gds='git di --staged'
+alias gf='git fetch --prune'
+alias gh='git hist'
+alias gl='git lol'
+alias gm='git merge --no-ff'
+alias gp='git pull --rebase'
+alias gr='git remote -v'
+alias gs='git st'
+alias gt='git tag'
+alias gca='git commit --amend'
+
+[ -f "`which ack`" ] || alias ack=ack-grep
+
+[ -f "`which gmake`" ] && alias make=gmake
+
+hub_path=`which hub`
+[[ -f $hub_path ]] && alias git=$hub_path
+
+alias apache-restart='sudo /usr/local/etc/rc.d/apache.sh restart'
+alias apache-stop='sudo /usr/local/etc/rc.d/apache.sh stop'
+alias apache-start='sudo /usr/local/etc/rc.d/apache.sh start'
+
+alias mine='sudo chown -R $USER:www .'
+
+# SVN
+alias st='svn st'
+alias sup='svn update'
+alias sci='svn commit -m'
+sd()
+{
+    svn di $@ | colordiff
+}
+
+alias pg='pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log'
+
+# serp
+
+# посмотреть логи рабочей копии
+wclog()
+{
+    tail -f /var/tmp/$USER-d-*
+}
+
+# обновить данные джейла с zelo
+dataup()
+{
+    sudo rsync -av --exclude '*.000' zelo::arkanavt/data.runtime/ /hol/arkanavt/data.runtime
+    sudo rsync -av --exclude '*.000' zelo::arkanavt/passport/ /hol/arkanavt/passport
+}
+
+all()
+{
+    if [ `basename $PWD` == 'touch' ]
+    then
+        e pages-touch/search/all/_all.ru.priv.js
+    elif [ `basename $PWD` == 'mischandlers' ]
+    then
+        e pages-desktop/error/_error.priv.js
+    elif [ `basename ${PWD%[0-9]}` == 'web' ]
+    then
+        es pages-desktop/search/all/_all.priv.js
+    elif [[ $PWD =~ 'touch' ]]
+    then
+        e pages-touch/common/_common.priv.js
+    else
+        e pages-desktop/common/_common.priv.js
+    fi
+}
+
+yxw()
+{
+    if [ -z `pwd | grep hol/arkanavt` ]
+    then
+        cd `pwd | grep -o '/home/[a-z]*/[a-z0-9]*'`
+    else
+        cd /hol/arkanavt
+    fi
+    cd report/templates/YxWeb
+}
+
+# подмаунтить jail
+# используется http://osxfuse.github.com/
+jailmount()
+{
+    JAIL=${1:-"leon42.yandex.ru"}
+    echo -e "\033[33m===> MOUNT JAIL: \033[31m$JAIL \033[0m"
+    mkdir -p /mount/$JAIL
+    jailunmount $JAIL
+    sshfs $USER@$JAIL:/ /mount/$JAIL -oauto_cache,reconnect,volname=$1
+}
+
+# размаунтить джейл
+jailunmount()
+{
+    JAIL=${1:-"leon42.yandex.ru"}
+    umount /mount/$1 >/dev/null
+}
+
+# Tmux
+alias tm="tmux -2 -S /tmp/tm-`whoami`"
+
+# Tmux session alias for pair-programming
+# Syntax:
+#    Server:
+#        tm-pair <feature>
+#    Client:
+#        tm-pair <user> <feature>
+function tm-pair
+{
+    if [ ${2} ]; then
+        tmux -2 -S /tmp/tm-${1} attach -t ${2}
+    else
+        tmux -2 -S /tmp/tm-`whoami` new -s ${1}
+    fi
+}
